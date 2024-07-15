@@ -438,6 +438,7 @@ public abstract class AuthenticLibreLogin<P, S> implements LibreLoginPlugin<P, S
                 shutdownProxy(0);
             }
 
+            /*
             var limbos = configuration.get(LIMBO);
             var lobby = configuration.get(LOBBY);
 
@@ -446,6 +447,7 @@ public abstract class AuthenticLibreLogin<P, S> implements LibreLoginPlugin<P, S
                     throw new CorruptedConfigurationException("Lobby server/world %s is also a limbo server/world, this is not allowed".formatted(value));
                 }
             }
+            */
         } catch (IOException e) {
             e.printStackTrace();
             logger.info("An unknown exception occurred while attempting to load the configuration, this most likely isn't your fault");
