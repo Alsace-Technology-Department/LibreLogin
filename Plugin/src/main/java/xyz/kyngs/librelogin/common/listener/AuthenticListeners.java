@@ -49,7 +49,7 @@ public class AuthenticListeners<Plugin extends AuthenticLibreLogin<P, S>, P, S> 
         }
         var sessionTime = Duration.ofSeconds(plugin.getConfiguration().get(ConfigurationKeys.SESSION_TIMEOUT));
 
-        if (user.autoLoginEnabled()) {
+        if (user.autoLoginEnabled() && !plugin.isTemporaryOffline(user.getUuid())) {
             plugin.delay(() -> plugin.getPlatformHandle().getAudienceForPlayer(player).sendMessage(plugin.getMessages().getMessage("info-premium-logged-in")), 500);
             plugin.getEventProvider().fire(plugin.getEventTypes().authenticated, new AuthenticAuthenticatedEvent<>(user, player, plugin, AuthenticatedEvent.AuthenticationReason.PREMIUM));
         } else if (sessionTime != null && user.getLastAuthentication() != null && ip.equals(user.getIp()) && user.getLastAuthentication().toLocalDateTime().plus(sessionTime).isAfter(LocalDateTime.now())) {
@@ -90,7 +90,15 @@ public class AuthenticListeners<Plugin extends AuthenticLibreLogin<P, S>, P, S> 
                 }
             };
 
-            return new PreLoginResult(PreLoginState.DENIED, message, null);
+            User user;
+            try {
+                user = checkAndValidateByName(username, null, true, address);
+            } catch (InvalidCommandArgument ex) {
+                return new PreLoginResult(PreLoginState.DENIED, ex.getUserFuckUp(), null);
+            }
+            plugin.addTemporaryOffline(user.getUuid(), message);
+
+            return new PreLoginResult(PreLoginState.FORCE_OFFLINE, message, user);
         }
 
         if (mojangData == null) {

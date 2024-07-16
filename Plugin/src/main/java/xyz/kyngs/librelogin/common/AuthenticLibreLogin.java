@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
 import org.bstats.charts.CustomChart;
 import org.jetbrains.annotations.Nullable;
 import xyz.kyngs.librelogin.api.BiHolder;
@@ -98,6 +99,7 @@ public abstract class AuthenticLibreLogin<P, S> implements LibreLoginPlugin<P, S
     private final Multimap<P, CancellableTask> cancelOnExit;
     private final PlatformHandle<P, S> platformHandle;
     private final Set<String> forbiddenPasswords;
+    private final Map<UUID, Component> temporaryOffline;
     protected Logger logger;
     private AuthenticPremiumProvider premiumProvider;
     private AuthenticEventProvider<P, S> eventProvider;
@@ -123,6 +125,7 @@ public abstract class AuthenticLibreLogin<P, S> implements LibreLoginPlugin<P, S
         platformHandle = providePlatformHandle();
         forbiddenPasswords = new HashSet<>();
         cancelOnExit = HashMultimap.create();
+        temporaryOffline = new ConcurrentHashMap<>();
     }
 
     public Map<Class<?>, DatabaseConnectorRegistration<?, ?>> getDatabaseConnectors() {
@@ -846,5 +849,17 @@ public abstract class AuthenticLibreLogin<P, S> implements LibreLoginPlugin<P, S
 
     protected java.util.logging.Logger getSimpleLogger() {
         return null;
+    }
+
+    public void addTemporaryOffline(UUID uuid, Component message) {
+        temporaryOffline.put(uuid, message);
+    }
+
+    public Component removeTemporaryOffline(UUID uuid) {
+        return temporaryOffline.remove(uuid);
+    }
+
+    public boolean isTemporaryOffline(UUID uuid) {
+        return temporaryOffline.containsKey(uuid);
     }
 }

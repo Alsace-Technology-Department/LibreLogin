@@ -118,6 +118,10 @@ public class AuthenticAuthorizationProvider<P, S> extends AuthenticHandler<P, S>
 
         unAuthorized.put(player, user.isRegistered());
 
+        Component message = plugin.removeTemporaryOffline(user.getUuid());
+        if (message != null)
+            audience.sendMessage(message);
+
         plugin.cancelOnExit(plugin.delay(() -> {
             if (!unAuthorized.containsKey(player)) return;
             sendInfoMessage(user.isRegistered(), audience);
