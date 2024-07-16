@@ -86,7 +86,7 @@ import static xyz.kyngs.librelogin.common.config.ConfigurationKeys.*;
 public abstract class AuthenticLibreLogin<P, S> implements LibreLoginPlugin<P, S> {
 
     public static final Gson GSON = new Gson();
-    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd. MM. yyyy HH:mm");
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     public static final ExecutorService EXECUTOR;
 
     static {
